@@ -1,0 +1,59 @@
+import pandas as pd
+import numpy as np
+
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import confusion_matrix, accuracy_score
+
+df = pd.read_csv("iris.csv")
+
+print(df.head())
+
+print(df.shape)
+
+print(df.columns)
+
+print("\nMissing Values:")
+print(df.isnull().sum())
+
+X = df.drop("species", axis=1)
+y = df["species"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.30, random_state=42
+)
+
+model = GaussianNB()
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+print(y_pred[:10])
+
+cm = confusion_matrix(y_test, y_pred)
+print(cm)
+
+TP = cm[0][0]
+FP = cm[:,0].sum() - TP
+FN = cm[0,:].sum() - TP
+TN = cm.sum() - (TP + FP + FN)
+
+print("\nTP =", TP)
+print("FP =", FP)
+print("FN =", FN)
+print("TN =", TN)
+
+
+accuracy = (TP + TN) / (TP + TN + FP + FN)
+error_rate = 1 - accuracy
+precision = TP / (TP + FP)
+recall = TP / (TP + FN)
+
+print("\nModel Performance:")
+print("Accuracy   =", accuracy)
+print("Error Rate =", error_rate)
+print("Precision  =", precision)
+print("Recall     =", recall)
+
+
+print(accuracy_score(y_test, y_pred))
+

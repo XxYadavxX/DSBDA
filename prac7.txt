@@ -1,0 +1,63 @@
+import nltk
+import pandas as pd
+
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+from nltk import pos_tag
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+nltk.download('punkt')
+nltk.download('punkt_tab')
+nltk.download('stopwords')
+nltk.download('averaged_perceptron_tagger_eng')
+nltk.download('wordnet')
+
+text = "Ravi is reading a book. He likes reading books."
+print(text)
+
+tokens = word_tokenize(text)
+print(tokens)
+
+pos_tags = pos_tag(tokens)
+print(pos_tags)
+
+stop_words = set(stopwords.words('english'))
+
+filtered_words = [word for word in tokens if word.lower() not in stop_words and word.isalpha()]
+print(filtered_words)
+
+ps = PorterStemmer()
+
+stemmed_words = [ps.stem(word) for word in filtered_words]
+print(stemmed_words)
+
+lemmatizer = WordNetLemmatizer()
+
+lemmatized_words = [lemmatizer.lemmatize(word) for word in filtered_words]
+
+print("\nLemmatized Words:")
+print(lemmatized_words)
+
+documents = [
+    "cat likes milk",
+    "dog likes food",
+    "cat and dog are animals"
+]
+
+vectorizer = TfidfVectorizer()
+
+tfidf_matrix = vectorizer.fit_transform(documents)
+
+tfidf_df = pd.DataFrame(
+    tfidf_matrix.toarray(),
+    columns=vectorizer.get_feature_names_out()
+)
+
+feature_names = vectorizer.get_feature_names_out()
+
+print(feature_names)
+
+print(tfidf_df)
+

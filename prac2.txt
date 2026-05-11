@@ -1,0 +1,48 @@
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler, PowerTransformer
+
+df = pd.read_csv("academic_performance.csv")
+
+print(df)
+
+print(df.isnull().sum())
+
+df["Maths"] = df["Maths"].fillna(df["Maths"].mean())
+df["Science"] = df["Science"].fillna(df["Science"].mean())
+df["English"] = df["English"].fillna(df["English"].mean())
+df["Attendance"] = df["Attendance"].fillna(df["Attendance"].mean())
+
+df["Attendance"] = df["Attendance"].clip(0, 100)
+
+print(df)
+
+numeric_cols = ["Maths", "Science", "English", "Attendance"]
+
+for col in numeric_cols:
+    Q1 = df[col].quantile(0.25) 
+    Q3 = df[col].quantile(0.75)
+    IQR = Q3 - Q1
+
+    lower = Q1 - 1.5 * IQR
+    upper = Q3 + 1.5 * IQR
+
+    outliers = df[(df[col] < lower) | (df[col] > upper)]
+
+    print(f"\nOutliers in {col}:")
+    print(outliers[[col]])
+
+    median_value = df[col].median()
+    df.loc[(df[col] < lower) | (df[col] > upper), col] = median_value
+
+print(df)
+
+scaler = MinMaxScaler() 
+df[["Attendance"]] = scaler.fit_transform(df[["Attendance"]])
+
+
+pt = PowerTransformer() 
+df[["Maths"]] = pt.fit_transform(df[["Maths"]])
+
+print(df)
+

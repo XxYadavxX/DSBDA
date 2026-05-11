@@ -1,0 +1,101 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+%matplotlib inline
+
+df = pd.read_csv('covid_vaccine_statewise.csv')
+
+df.head()
+
+df.info()
+
+df.describe().transpose()
+
+df.columns
+
+df.drop(['Updated On', 'Sessions',
+ ' Sites ',
+ 'Transgender (Doses Administered)',
+ ' Covaxin (Doses Administered)',
+ 'CoviShield (Doses Administered)',
+ 'Sputnik V (Doses Administered)',
+ 'AEFI',
+ '18-44 Years (Doses Administered)',
+ '45-60 Years (Doses Administered)',
+ '60+ Years (Doses Administered)',
+ '18-44 Years(Individuals Vaccinated)',
+ '45-60 Years(Individuals Vaccinated)',
+ '60+ Years(Individuals Vaccinated)',
+ 'Male(Individuals Vaccinated)',
+ 'Female(Individuals Vaccinated)',
+ 'Transgender(Individuals Vaccinated)'],
+ axis=1,
+ inplace=True)
+
+df
+
+df = df[df['State'] != "India"]
+
+df
+
+grouped_data = df.groupby('State').sum().reset_index()
+
+grouped_data
+
+grouped_data.info()
+
+
+plt.figure(figsize=(12,12))
+
+sns.barplot(
+    data=grouped_data,
+    y='State',
+    x='First Dose Administered',
+    palette='flare'
+)
+
+plt.title('State vs First Dose Administered')
+
+plt.show()
+
+plt.figure(figsize=(12,12))
+
+sns.barplot(
+    data=grouped_data,
+    y='State',
+    x='Second Dose Administered',
+    palette='flare'
+)
+
+plt.title('State vs Second Dose Administered')
+
+plt.show()
+
+plt.figure(figsize=(12,12))
+
+sns.barplot(
+    data=grouped_data,
+    y='State',
+    x='Male (Doses Administered)',
+    palette='crest'
+)
+
+plt.title('State vs Male Dose Administered')
+
+plt.show()
+
+
+plt.figure(figsize=(12,12))
+
+sns.barplot(
+    data=grouped_data,
+    y='State',
+    x='Female (Doses Administered)',
+    palette='crest'
+)
+
+plt.title('State vs Female Dose Administered')
+
+plt.show()
